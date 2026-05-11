@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f7f5f2;--card:#fff;--ink:#111;--muted:#777;--line:rgba(0,0,0,.09);
+      --green:#1a7a4a;--gbg:#edf7f2;--red:#b53232;--rbg:#fdf0f0;--amber:#7a5a1a;--abg:#fdf8ed}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+a{text-decoration:none;color:inherit}
+
+/* ── NAV – no border ── */
+.nav{position:sticky;top:0;z-index:100;background:rgba(247,245,242,.97);backdrop-filter:blur(14px)}
+.navin{display:flex;justify-content:space-between;align-items:center;
+       padding:14px 28px;max-width:1280px;margin:auto;gap:16px}
+
+/* Brand */
+.brand{font-size:19px;font-weight:900;letter-spacing:-.03em;
+       display:flex;align-items:center;gap:2px;white-space:nowrap;flex-shrink:0}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--ink);
+           display:inline-block;margin-left:2px;margin-bottom:1px}
+
+/* Centre links */
+.navlinks{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
+.navlinks a{font-size:13.5px;font-weight:500;color:var(--muted);
+            padding:6px 12px;border-radius:8px;white-space:nowrap;
+            display:flex;align-items:center;gap:5px;transition:background .15s,color .15s}
+.navlinks a:hover{background:rgba(0,0,0,.06);color:var(--ink)}
+.badge-new{font-size:9px;font-weight:700;background:var(--ink);color:#fff;
+           border-radius:5px;padding:2px 6px;letter-spacing:.05em;line-height:1.2}
+.chevron{font-size:8px;opacity:.4}
+
+/* Dropdown */
+.ddwrap{position:relative}
+.ddwrap:hover .dropdown{display:block}
+.dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;
+          background:#fff;border:1px solid var(--line);border-radius:18px;
+          box-shadow:0 16px 48px rgba(0,0,0,.12);min-width:200px;padding:8px;z-index:200}
+.dropdown a{display:block;padding:10px 14px;border-radius:10px;
+            font-size:13px;font-weight:500;color:var(--ink)}
+.dropdown a:hover{background:#f3f1ee}
+
+/* Search */
+.search-wrap{position:relative;flex-shrink:0}
+.navsearch{display:flex;align-items:center;gap:8px;background:#fff;
+           border:1.5px solid rgba(0,0,0,.11);border-radius:999px;
+           padding:8px 18px;width:250px;transition:border-color .2s,box-shadow .2s}
+.navsearch:focus-within{border-color:var(--ink);box-shadow:0 0 0 3px rgba(17,17,17,.07)}
+.navsearch svg{flex-shrink:0;opacity:.38}
+#navSearchInput{border:none;background:transparent;outline:none;
+                font:inherit;font-size:13px;color:var(--ink);width:100%}
+#navSearchInput::placeholder{color:var(--muted)}
+
+/* Search results */
+.search-results{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;
+                background:#fff;border:1px solid var(--line);border-radius:18px;
+                box-shadow:0 16px 48px rgba(0,0,0,.13);padding:8px;z-index:300;
+                max-height:340px;overflow-y:auto}
+.search-results.open{display:block}
+.sr-section{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+            color:var(--muted);padding:8px 13px 4px}
+.sr-item{display:flex;align-items:center;gap:11px;padding:10px 13px;
+         border-radius:11px;cursor:pointer;transition:background .13s}
+.sr-item:hover{background:#f3f1ee}
+.sr-icon{width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;
+         display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sr-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
+.sr-tag{font-size:11px;color:var(--muted);margin-top:1px}
+.sr-empty{padding:16px 13px;font-size:13px;color:var(--muted);text-align:center}
+
+/* Right action buttons */
+.navactions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.navactions a{font-size:13px;font-weight:500;color:var(--muted);
+              padding:8px 12px;border-radius:8px;white-space:nowrap;transition:color .15s}
+.navactions a:hover{color:var(--ink)}
+.nav-signup{border:1.5px solid rgba(0,0,0,.13);border-radius:999px;
+            padding:8px 16px!important;color:var(--ink)!important}
+.nav-signup:hover{background:rgba(0,0,0,.04)!important}
+
+.nav-certified {
+  background: #000;
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 8px 20px !important;
+  font-weight: 700 !important;
+  transition: background .2s, transform .12s, box-shadow .2s !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+.nav-certified:hover {
+  background: #222 !important;
+  transform: scale(1.03);
+  box-shadow: 0 4px 18px rgba(0,0,0,.4) !important;
+}
+
+.nav-enroll{border:1.5px solid rgba(0,0,0,.13);border-radius:999px;
+            padding:8px 16px!important;color:var(--ink)!important}
+.nav-enroll:hover{background:rgba(0,0,0,.04)!important}
+
+/* ── HAMBURGER MENU ── */
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;
+           width:40px;height:40px;background:none;border:none;cursor:pointer;
+           padding:6px;border-radius:8px;flex-shrink:0}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);
+                border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile drawer — DARK THEME WITH WHITE TEXT */
+.mobile-drawer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+               background:#000000;  /* pure black background */
+               backdrop-filter:blur(18px);
+               z-index:90;flex-direction:column;padding:80px 28px 40px;
+               overflow-y:auto}
+.mobile-drawer.open{display:flex}
+.mobile-drawer a,
+.mobile-drawer .mobile-cta a,
+.mobile-drawer .mobile-cta .btn,
+.mobile-drawer .mobile-cta .btn.ghost,
+.mobile-drawer .mobile-cta .btn.primary
+{color:#ffffff !important; border-bottom-color:rgba(255,255,255,0.15);}
+.mobile-drawer a{font-size:18px;font-weight:600;padding:14px 0;
+                 border-bottom:1px solid rgba(255,255,255,0.15);display:block;
+                 transition:opacity .2s}
+.mobile-drawer a:hover{opacity:0.75}
+.mobile-drawer .mobile-cta{margin-top:24px;display:flex;flex-direction:column;gap:12px}
+.mobile-drawer .mobile-cta a{border:none;font-size:15px;border-radius:999px;
+                             padding:14px 20px;text-align:center;background:transparent}
+.mobile-drawer .mobile-cta .btn.ghost{
+  border:1.5px solid rgba(255,255,255,0.8);
+  background:transparent;
+  color:#fff !important;
+}
+.mobile-drawer .mobile-cta .btn.primary{
+  background:#ffffff;
+  color:#000000 !important;
+  border:none;
+  font-weight:700;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.mobile-drawer .mobile-cta .btn.primary:hover{
+  background:#f0f0f0;
+  transform:scale(0.98);
+}
+/* Search input inside mobile drawer */
+.mobile-search-wrap{margin-bottom:28px}
+.mobile-drawer .navsearch{
+  width:100%;
+  border-radius:18px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(255,255,255,0.3);
+  backdrop-filter:none;
+}
+.mobile-drawer .navsearch input{
+  color:#111;
+  background:transparent;
+}
+.mobile-drawer .navsearch input::placeholder{
+  color:#666;
+}
+.mobile-drawer .navsearch svg{
+  stroke:#111;
+  opacity:0.7;
+}
+/* Mobile search results container inside drawer */
+#mobileSearchResults {
+  background: #111;
+  border-radius: 20px;
+  margin-top: 12px;
+  padding: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+#mobileSearchResults .sr-section {
+  color: #aaa;
+  padding: 8px 12px 4px;
+}
+#mobileSearchResults .sr-item {
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  margin-bottom: 6px;
+}
+#mobileSearchResults .sr-item:hover {
+  background: rgba(255,255,255,0.15);
+}
+#mobileSearchResults .sr-name {
+  color: white;
+}
+#mobileSearchResults .sr-tag {
+  color: #ccc;
+}
+#mobileSearchResults .sr-icon {
+  background: #2a2a2a;
+  color: white;
+}
+#mobileSearchResults .sr-empty {
+  color: #ccc;
+}
+.mobile-drawer::-webkit-scrollbar{width:4px}
+.mobile-drawer::-webkit-scrollbar-track{background:#2a2a2a}
+.mobile-drawer::-webkit-scrollbar-thumb{background:#555;border-radius:6px}
+
+/* ── PAGE ── */
+.wrap{max-width:1100px;margin:auto;padding:20px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:60px 0}
+h1{font-size:clamp(38px,6vw,68px);line-height:1.04;margin:0 0 14px;font-weight:300}
+h2{font-size:clamp(24px,3.5vw,38px);font-weight:300;margin:0 0 6px}
+h3{font-size:17px;font-weight:600;margin:0 0 7px}
+p{color:var(--muted);line-height:1.7;margin:0 0 10px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{border:none;border-radius:999px;padding:13px 22px;font-size:13.5px;cursor:pointer;
+     display:inline-flex;align-items:center;gap:5px;font-family:inherit;font-weight:600;
+     transition:opacity .2s,transform .12s}
+.btn:hover{opacity:.82}.btn:active{transform:scale(.97)}
+.primary{background:var(--ink);color:#fff}
+.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:0 10px 36px rgba(0,0,0,.05)}
+.panel{padding:24px}
+.heroart{height:260px;border-radius:20px;background:linear-gradient(135deg,#f3ece3,#e8e1d7);
+         display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ring{border-radius:50%;border:1px solid rgba(0,0,0,.08);position:absolute;
+      top:50%;left:50%;transform:translate(-50%,-50%)}
+.cp{background:#fff;border-radius:14px;padding:16px 24px;box-shadow:0 6px 28px rgba(0,0,0,.1);
+    max-width:210px;position:relative;z-index:1;text-align:center}
+.cp-lbl{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.cp-name{font-size:16px;font-weight:700;margin:3px 0}
+.cp-id{font-size:10px;color:var(--muted);font-family:monospace}
+.cp-seal{width:28px;height:28px;border-radius:50%;background:var(--ink);display:flex;
+         align-items:center;justify-content:center;margin:8px auto 0;color:#fff;font-size:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.mini{background:#f7f5f2;border-radius:16px;padding:13px}
+.section{padding:14px 0 60px}
+.slabel{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+        margin-bottom:8px;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.contact{padding:24px}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.full{grid-column:span 2}
+input,textarea,select{width:100%;border:1.5px solid var(--line);background:#f7f5f2;
+  border-radius:16px;padding:12px 14px;font:inherit;outline:none;
+  color:var(--ink);transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+.small{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.result{margin-top:14px;padding:16px;border-radius:18px;background:#f5f5f5;
+        border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.6}
+.result.success{background:var(--gbg);border-color:rgba(26,122,74,.2);color:var(--green)}
+.result.error{background:var(--rbg);border-color:rgba(181,50,50,.2);color:var(--red)}
+.footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;color:var(--muted);font-size:13px}
+.ftlinks{display:flex;justify-content:center;gap:18px;margin-top:8px;flex-wrap:wrap}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:12px 18px;
+       border-radius:14px;font-size:13px;z-index:9999;opacity:0;transform:translateY(10px);
+       transition:all .3s;pointer-events:none;box-shadow:0 6px 28px rgba(0,0,0,.2)}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Responsive rules: hide desktop nav and adjust mobile drawer */
+@media(max-width:940px){
+  .navsearch{width:190px}.nav-enroll{display:none}.nh{display:none!important}
+}
+@media(max-width:860px){
+  .hero,.cards,.grid3{grid-template-columns:1fr}.heroart{height:200px}
+  .form{grid-template-columns:1fr}.full{grid-column:span 1}
+}
+@media(max-width:720px){
+  .navsearch{display:none}.navlinks{display:none}.navactions{display:none}
+  .hamburger{display:flex}
+  body{overflow-x:hidden}
+  .wrap{padding:12px 16px}.navin{padding:12px 16px}
+  .hero{padding:32px 0 24px;gap:20px}
+  .hero-box-glass{padding:28px 20px;margin:12px}
+  .section{padding:10px 0 40px}.contact{padding:16px}
+  h1{word-break:break-word}
+  .toast{bottom:12px;right:12px;left:12px;text-align:center}
+}
+
+/* ── AUTH MODAL (unchanged) ── */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s}
+.auth-overlay.open{opacity:1;pointer-events:all}
+.auth-modal{background:#fff;border-radius:28px;padding:40px 36px;width:100%;max-width:420px;
+  box-shadow:0 32px 80px rgba(0,0,0,.18);transform:translateY(18px) scale(.97);
+  transition:transform .28s cubic-bezier(.34,1.28,.64,1),opacity .25s;
+  opacity:0;position:relative;margin:16px}
+.auth-overlay.open .auth-modal{transform:translateY(0) scale(1);opacity:1}
+.auth-close{position:absolute;top:16px;right:18px;background:none;border:none;
+  cursor:pointer;font-size:20px;color:var(--muted);line-height:1;padding:4px 8px;border-radius:8px}
+.auth-close:hover{background:#f3f1ee;color:var(--ink)}
+.auth-logo{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
+.auth-title{font-size:22px;font-weight:700;margin:0 0 4px}
+.auth-sub{font-size:13.5px;color:var(--muted);margin:0 0 24px}
+.auth-google{display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:13px 18px;border:1.5px solid var(--line);border-radius:14px;
+  background:#fff;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;
+  transition:background .15s,border-color .15s,box-shadow .15s;font-family:inherit}
+.auth-google:hover{background:#f7f5f2;border-color:rgba(0,0,0,.2);box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:.02em}
+.auth-field input{width:100%;border:1.5px solid var(--line);background:#f7f5f2;
+  border-radius:12px;padding:12px 14px;font:inherit;outline:none;color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;font-size:14px}
+.auth-field input:focus{border-color:var(--ink);background:#fff;box-shadow:0 0 0 3px rgba(17,17,17,.06)}
+.auth-forgot{font-size:12px;color:var(--muted);float:right;margin-top:-10px;margin-bottom:14px;cursor:pointer}
+.auth-forgot:hover{color:var(--ink)}
+.auth-submit{width:100%;padding:14px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#1a7a4a,#229a5e);color:#fff;font-size:15px;
+  font-weight:700;cursor:pointer;font-family:inherit;
+  transition:opacity .2s,transform .12s,box-shadow .2s;
+  box-shadow:0 4px 16px rgba(26,122,74,.3)}
+.auth-submit:hover{opacity:.9;box-shadow:0 6px 22px rgba(26,122,74,.4)}
+.auth-submit:active{transform:scale(.98)}
+.auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted)}
+.auth-switch a{color:var(--ink);font-weight:600;cursor:pointer;text-decoration:underline}
+.auth-terms{text-align:center;font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.6}
+.auth-terms a{color:var(--ink)}
+.auth-name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){
+  .auth-modal{padding:28px 20px;border-radius:22px}
+  .auth-name-row{grid-template-columns:1fr}
+}
+
+/* ── GOOGLE BUTTON CONTAINERS ── */
+.google-btn-container{width:100%;margin-bottom:0}
+.google-btn-container > div{width:100%!important}
+
+/* ── PROFILE AVATAR (nav) ── */
+.nav-avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);
+  cursor:pointer;object-fit:cover;transition:border-color .2s,transform .15s;flex-shrink:0}
+.nav-avatar:hover{border-color:var(--ink);transform:scale(1.06)}
+.nav-avatar-initials{width:34px;height:34px;border-radius:50%;background:var(--ink);
+  color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;border:2px solid transparent;
+  transition:border-color .2s,transform .15s;flex-shrink:0;letter-spacing:.02em}
+.nav-avatar-initials:hover{border-color:rgba(0,0,0,.2);transform:scale(1.06)}
+
+/* ── PROFILE OVERLAY ── */
+.profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s}
+.profile-overlay.open{opacity:1;pointer-events:all}
+.profile-modal{background:#fff;border-radius:28px;padding:0;width:100%;max-width:480px;
+  box-shadow:0 32px 80px rgba(0,0,0,.18);transform:translateY(18px) scale(.97);
+  transition:transform .28s cubic-bezier(.34,1.28,.64,1),opacity .25s;
+  opacity:0;position:relative;margin:16px;overflow:hidden}
+.profile-overlay.open .profile-modal{transform:translateY(0) scale(1);opacity:1}
+
+/* Profile header banner */
+.profile-banner{height:100px;background:linear-gradient(135deg,#111 0%,#333 50%,#1a7a4a 100%);
+  position:relative}
+.profile-banner-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.15);
+  border:none;cursor:pointer;font-size:18px;color:#fff;line-height:1;padding:6px 10px;
+  border-radius:8px;backdrop-filter:blur(4px);transition:background .15s}
+.profile-banner-close:hover{background:rgba(255,255,255,.28)}
+
+/* Avatar in profile */
+.profile-avatar-wrap{position:absolute;bottom:-38px;left:32px}
+.profile-avatar-img{width:76px;height:76px;border-radius:50%;border:4px solid #fff;
+  object-fit:cover;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.profile-avatar-initials-lg{width:76px;height:76px;border-radius:50%;background:var(--ink);
+  color:#fff;font-size:26px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;border:4px solid #fff;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+
+/* Profile body */
+.profile-body{padding:52px 32px 32px}
+.profile-name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 0 2px;color:var(--ink)}
+.profile-email{font-size:13px;color:var(--muted);margin:0 0 24px}
+.profile-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;background:#edf7f2;color:var(--green);
+  border-radius:99px;padding:4px 12px;margin-bottom:24px;border:1px solid rgba(26,122,74,.15)}
+
+/* Profile stats */
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.profile-stat{background:#f7f5f2;border-radius:16px;padding:14px 12px;text-align:center}
+.profile-stat-num{font-size:22px;font-weight:800;color:var(--ink);line-height:1}
+.profile-stat-lbl{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+
+/* Profile section label */
+.profile-section-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 10px}
+
+/* Enrolled courses list */
+.profile-courses{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.profile-course-item{display:flex;align-items:center;gap:12px;background:#f7f5f2;
+  border-radius:14px;padding:12px 14px}
+.profile-course-icon{font-size:20px;flex-shrink:0}
+.profile-course-name{font-size:13px;font-weight:600;color:var(--ink)}
+.profile-course-tag{font-size:11px;color:var(--muted)}
+.profile-course-status{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;background:#edf7f2;color:var(--green);border-radius:99px;
+  padding:3px 10px;border:1px solid rgba(26,122,74,.15);white-space:nowrap}
+
+/* Edit profile form */
+.profile-edit-form{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.profile-edit-form input{border:1.5px solid var(--line);background:#f7f5f2;border-radius:12px;
+  padding:11px 14px;font:inherit;outline:none;color:var(--ink);font-size:14px;
+  transition:border-color .2s}
+.profile-edit-form input:focus{border-color:var(--ink);background:#fff}
+
+/* Action buttons row */
+.profile-actions{display:flex;gap:10px;flex-wrap:wrap}
+.profile-btn{border:none;border-radius:12px;padding:11px 20px;font-size:13px;cursor:pointer;
+  font-family:inherit;font-weight:600;transition:opacity .2s,transform .12s;display:inline-flex;
+  align-items:center;gap:6px}
+.profile-btn:active{transform:scale(.97)}
+.profile-btn.primary{background:var(--ink);color:#fff}
+.profile-btn.primary:hover{opacity:.82}
+.profile-btn.ghost{background:#f7f5f2;color:var(--ink);border:1.5px solid var(--line)}
+.profile-btn.ghost:hover{background:#efefef}
+.profile-btn.danger{background:#fdf0f0;color:var(--red);border:1.5px solid rgba(181,50,50,.15)}
+.profile-btn.danger:hover{background:#fce4e4}
+
+/* Profile tabs */
+.profile-tabs{display:flex;gap:4px;background:#f7f5f2;border-radius:14px;padding:4px;margin-bottom:20px}
+.profile-tab{flex:1;text-align:center;padding:8px 12px;border-radius:10px;font-size:12.5px;
+  font-weight:600;cursor:pointer;color:var(--muted);transition:background .15s,color .15s;border:none;
+  background:transparent;font-family:inherit}
+.profile-tab.active{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* Profile pane */
+.profile-pane{display:none}.profile-pane.active{display:block}
+
+@media(max-width:480px){
+  .profile-modal{border-radius:22px}
+  .profile-body{padding:48px 20px 24px}
+  .profile-stats{grid-template-columns:repeat(3,1fr)}
+  .profile-avatar-wrap{left:20px}
+  .profile-actions{flex-direction:column}
+}
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="nav">
+  <div class="navin">
+    <div class="brand">CI MINDS<span class="brand-dot"></span></div>
+    <nav class="navlinks">
+      <div class="ddwrap">
+        <a href="#">Explore <span class="chevron">▾</span></a>
+        <div class="dropdown">
+          <a href="#about">Programs</a>
+          <a href="#contact">Enrollment</a>
+          <a href="#">Resources</a>
+          <a href="#">Community</a>
+        </div>
+      </div>
+      <a href="courses.html" class="nh">Courses</a>
+      <a href="#">Certify <span class="badge-new">New</span></a>
+      <a href="#contact" class="nh">Verify</a>
+      <a href="#" class="nh">Partners</a>
+    </nav>
+    <div class="search-wrap">
+      <div class="navsearch">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="navSearchInput" placeholder="Search certification courses…" autocomplete="off"
+               oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)" onblur="setTimeout(closeSearch, 200)"/>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div class="navactions" id="navActionsDesktop">
+      <a href="#" id="navLoginBtn" onclick="openAuth('login');return false">Log in</a>
+      <a href="#" id="navSignupBtn" class="nav-signup" onclick="openAuth('signup');return false">Sign Up</a>
+      <a href="#contact" class="nav-certified">Get Certified</a>
+      <a href="#contact" class="nav-enroll">Enroll Now</a>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-search-wrap">
+    <div class="navsearch" style="display:flex;width:100%;border-radius:16px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="mobileSearchInput" placeholder="Search courses…" autocomplete="off"
+             oninput="handleSearchMobile(this.value)" onfocus="handleSearchMobile(this.value)"
+             onblur="setTimeout(closeMobileSearch, 200)"/>
+    </div>
+    <div id="mobileSearchResults" class="search-results-mobile"></div>
+  </div>
+  <a href="#about" onclick="closeDrawer()">Programs</a>
+  <a href="#contact" onclick="closeDrawer()">Enrollment</a>
+  <a href="#contact" onclick="closeDrawer()">Certify</a>
+  <a href="#contact" onclick="closeDrawer()">Verify</a>
+  <a href="#" onclick="closeDrawer()">Partners</a>
+  <a href="#" id="mobileProfileLink" style="display:none" onclick="closeDrawer();openProfile();return false">👤 My Profile</a>
+  <div class="mobile-cta">
+    <a href="#" class="btn ghost" style="display:block;text-align:center" onclick="closeDrawer();openAuth('login');return false">Log in</a>
+    <a href="#contact" class="btn primary" style="display:block;text-align:center" onclick="closeDrawer()">Get Certified</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="small" style="margin-bottom:14px">CBK Innovative Minds</div>
+      <h1>CI Minds certification built for trust.</h1>
+      <p>Empowering learners with industry-focused courses and trusted certifications that help them stand out and grow.</p>
+      <div class="btns"><a class="btn primary" href="#contact">Enroll Now</a></div>
+    </div>
+    <div class="hero-box-outer"><div class="hero-box-mesh"></div><div class="hero-orb hero-orb1"></div><div class="hero-orb hero-orb2"></div><div class="hero-orb hero-orb3"></div>
+      <div class="hero-box-glass"><div class="hero-box-headline"><span class="hb-word hb-w1">Learn.</span><span class="hb-word hb-w2">Prove it.</span><span class="hb-word hb-w3">Get certified.</span></div></div>
+    </div>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+    .hero-box-outer{position:relative;border-radius:32px;overflow:hidden;min-height:320px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0ece6 0%,#e8e2d9 40%,#ede6da 70%,#e4ddd2 100%);box-shadow:0 20px 60px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.06)}.hero-box-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(180,160,130,0.25) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(160,145,120,0.18) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 60% 10%,rgba(200,185,160,0.2) 0%,transparent 60%);animation:meshShift 8s ease-in-out infinite alternate}.hero-orb{position:absolute;border-radius:50%;filter:blur(36px);pointer-events:none}.hero-orb1{width:160px;height:160px;background:rgba(180,160,130,0.35);top:-40px;left:-30px;animation:orbFloat1 7s ease-in-out infinite}.hero-orb2{width:120px;height:120px;background:rgba(160,140,110,0.28);bottom:-20px;right:20px;animation:orbFloat2 9s ease-in-out infinite}.hero-orb3{width:80px;height:80px;background:rgba(200,180,150,0.3);top:50%;left:55%;animation:orbFloat3 6s ease-in-out infinite}@keyframes meshShift{0%{opacity:1;transform:scale(1) rotate(0deg)}100%{opacity:.85;transform:scale(1.06) rotate(2deg)}}@keyframes orbFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,14px)}}@keyframes orbFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(-14px,-18px)}}@keyframes orbFloat3{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-12px)}}.hero-box-glass{position:relative;z-index:2;background:rgba(255,255,255,0.35);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.55);border-radius:24px;padding:44px 48px;margin:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 12px 40px rgba(0,0,0,0.07);text-align:center;width:100%}.hero-box-headline{display:flex;flex-direction:column;gap:4px}.hb-word{font-family:'Playfair Display',Georgia,serif;line-height:1.15;display:block;color:#111}.hb-w1{font-size:clamp(30px,4vw,48px);font-weight:700;color:#111;animation:fadeUp .6s ease both}.hb-w2{font-size:clamp(24px,3.2vw,38px);font-style:italic;font-weight:400;color:#555;animation:fadeUp .6s .12s ease both}.hb-w3{font-size:clamp(20px,2.6vw,32px);font-weight:700;color:#111;letter-spacing:-.01em;animation:fadeUp .6s .24s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}</style>
+  </section>
+
+  <section id="about" class="section">
+    <div class="slabel">Program Overview</div>
+    <h2>Designed to validate excellence.</h2>
+    <div class="cards"><div class="card panel"><div style="font-size:26px;margin-bottom:10px">📚</div><h3>Practical courses</h3><p>Structured learning experiences focused on real understanding and applicable skills.</p></div><div class="card panel"><div style="font-size:26px;margin-bottom:10px">🔍</div><h3>Trusted certification</h3><p>Secure digital credentials that can be instantly verified anytime.</p></div><div class="card panel"><div style="font-size:26px;margin-bottom:10px">⚙️</div><h3>Professional growth</h3><p>Programs designed to help learners gain recognition and create meaningful impact.</p></div></div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="slabel">Contact &amp; Enrollment</div>
+    <h2>Ready to join the program?</h2>
+    <p>Fill in your details and our team will get back to you within 2 business days.</p>
+    <div class="card contact" style="margin-top:18px"><div class="form"><input id="cName" placeholder="Full name *" /><input id="cEmail" type="email" placeholder="Email address *" /><select id="cProgram" class="full"><option value="">Select a program…</option><option>CI Minds Fundamentals</option><option>CI Minds Advanced</option><option>CI Minds Professional</option><option>Custom / Corporate training</option></select><textarea id="cMsg" class="full" placeholder="Your message or questions…" maxlength="600" oninput="document.getElementById('charCount').textContent=this.value.length+'/600'"></textarea><div class="full" style="font-size:12px;color:var(--muted)"><span id="charCount">0</span>/600</div><div class="full" style="display:flex;justify-content:flex-end"><button class="btn primary" onclick="submitContact()">Send Message →</button></div></div><div id="contactResult" class="result" style="display:none"></div></div>
+  </section>
+  <div class="footer"><div><strong>CI Minds Certification Program</strong> · CBK Innovative Minds</div><div class="ftlinks"><a href="#about">About</a><a href="#contact">Contact</a></div><div style="margin-top:8px;font-size:11px">© 2026 CBK Innovative Minds. All rights reserved.</div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var COURSES = [
+  { icon:'🎓', name:'CI Minds Fundamentals',       tag:'Beginner · 4 weeks',          sel:'CI Minds Fundamentals' },
+  { icon:'🚀', name:'CI Minds Advanced',            tag:'Intermediate · 6 weeks',       sel:'CI Minds Advanced' },
+  { icon:'💼', name:'CI Minds Professional',        tag:'Expert · 8 weeks',             sel:'CI Minds Professional' },
+  { icon:'🏢', name:'Custom / Corporate Training',  tag:'Flexible · Team packages',     sel:'Custom / Corporate training' },
+  { icon:'🔍', name:'Certificate Verification',     tag:'Verify any CI Minds credential',sel:'' },
+  { icon:'📊', name:'Data & Analytics Track',       tag:'Coming soon',                  sel:'' },
+  { icon:'🛡️', name:'Cybersecurity Essentials',     tag:'Coming soon',                  sel:'' },
+  { icon:'🤖', name:'AI & Machine Learning Basics', tag:'Coming soon',                  sel:'' },
+];
+
+function renderSearchResults(list, containerId, isMobile = false) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  if (!list.length) {
+    container.innerHTML = '<div class="sr-empty">No courses found — <a href="#contact" style="color:var(--ink);font-weight:600">contact us</a> for custom programs.</div>';
+  } else {
+    var html = '<div class="sr-section">' + (list === COURSES ? 'All Courses' : 'Results') + '</div>';
+    list.forEach(function(c, idx) {
+      // store original index for pickCourse
+      var originalIndex = COURSES.findIndex(function(orig) { return orig.name === c.name && orig.tag === c.tag; });
+      html += '<div class="sr-item" onmousedown="pickCourse(' + originalIndex + ', true)">' +
+                '<div class="sr-icon">' + c.icon + '</div>' +
+                '<div><div class="sr-name">' + c.name + '</div>' +
+                '<div class="sr-tag">' + c.tag + '</div></div>' +
+              '</div>';
+    });
+    container.innerHTML = html;
+  }
+  if (containerId === 'searchResults') {
+    document.getElementById('searchResults').classList.add('open');
+  }
+}
+
+function handleSearch(q) {
+  q = (q || '').trim().toLowerCase();
+  var list = q ? COURSES.filter(function(c){ return c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q); }) : COURSES;
+  renderSearchResults(list, 'searchResults', false);
+}
+
+function handleSearchMobile(q) {
+  q = (q || '').trim().toLowerCase();
+  var list = q ? COURSES.filter(function(c){ return c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q); }) : COURSES;
+  renderSearchResults(list, 'mobileSearchResults', true);
+}
+
+function pickCourse(idx, fromMobile) {
+  var c = COURSES[idx];
+  if (!c) return;
+  // update both search inputs for consistency
+  document.getElementById('navSearchInput').value = c.name;
+  var mobileInput = document.getElementById('mobileSearchInput');
+  if (mobileInput) mobileInput.value = c.name;
+  closeSearch();
+  closeMobileSearch();
+  if (c.sel) {
+    var sel = document.getElementById('cProgram');
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].text === c.sel) { sel.selectedIndex = i; break; }
+    }
+  }
+  document.getElementById('contact').scrollIntoView({ behavior:'smooth' });
+  if (fromMobile) closeDrawer();
+}
+
+function closeSearch() {
+  var resDiv = document.getElementById('searchResults');
+  if (resDiv) resDiv.classList.remove('open');
+}
+function closeMobileSearch() {
+  var mobileRes = document.getElementById('mobileSearchResults');
+  if (mobileRes) mobileRes.innerHTML = '';
+}
+
+function toast(m) { var e = document.getElementById('toast'); e.textContent = m; e.classList.add('show'); setTimeout(function(){ e.classList.remove('show'); }, 2800); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function setR(el, html, t) { el.innerHTML = html; el.className = 'result' + (t ? ' ' + t : ''); el.style.display = ''; }
+var THIRD_PARTY_URL = 'https://formspree.io/f/mnjwgowp';
+async function submitContact() { var n = document.getElementById('cName').value.trim(); var e = document.getElementById('cEmail').value.trim(); var p = document.getElementById('cProgram').value; var m = document.getElementById('cMsg').value.trim(); var r = document.getElementById('contactResult'); if (!n || !e) { setR(r,'⚠ Please fill in your name and email.','error'); return; } if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setR(r,'⚠ Please enter a valid email address.','error'); return; } try { var res = await fetch(THIRD_PARTY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name:n, email:e, program:p||'Not selected', message:m }) }); if (res.ok) { setR(r,'<strong>✓ Message sent</strong> — Thank you, <b>'+esc(n)+'</b>. We\'ll reply to <em>'+esc(e)+'</em> shortly.','success'); toast('Message sent ✓'); ['cName','cEmail','cMsg'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('cProgram').value=''; document.getElementById('charCount').textContent='0'; } else { setR(r,'⚠ Submission failed: '+(await res.text()||res.statusText),'error'); } } catch(err) { setR(r,'⚠ Network error. Please try again later.','error'); } }
+function toggleDrawer() { var d = document.getElementById('mobileDrawer'); var h = document.getElementById('hamburger'); d.classList.toggle('open'); h.classList.toggle('open'); document.body.style.overflow = d.classList.contains('open') ? 'hidden' : ''; if (!d.classList.contains('open')) closeMobileSearch(); }
+function closeDrawer() { document.getElementById('mobileDrawer').classList.remove('open'); document.getElementById('hamburger').classList.remove('open'); document.body.style.overflow = ''; closeMobileSearch(); }
+function closeAuth() { document.getElementById('authOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+function handleOverlayClick(e) { if (e.target === document.getElementById('authOverlay')) closeAuth(); }
+const GOOGLE_CLIENT_ID = '1010239978137-d43e65gr5o0k0ijf816irfge7n4dskm5.apps.googleusercontent.com';
+
+// ── GOOGLE AUTH (fixed: uses renderButton instead of broken prompt()) ──
+function initGoogleButtons() {
+  if (!window.google || !window.google.accounts) return;
+  var containers = ['googleBtnLogin', 'googleBtnSignup'];
+  containers.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+      ux_mode: 'popup'
+    });
+    window.google.accounts.id.renderButton(el, {
+      type: 'standard',
+      shape: 'rectangular',
+      theme: 'outline',
+      text: id === 'googleBtnLogin' ? 'signin_with' : 'signup_with',
+      size: 'large',
+      width: el.offsetWidth || 340,
+      logo_alignment: 'left'
+    });
+  });
+}
+
+function handleGoogleCredential(response) {
+  if (!response.credential) { toast('Google sign-in failed. Please try again.'); return; }
+  try {
+    var parts = response.credential.split('.');
+    var padded = parts[1].replace(/-/g,'+').replace(/_/g,'/');
+    while (padded.length % 4) padded += '=';
+    var payload = JSON.parse(atob(padded));
+    var name = payload.name || payload.email.split('@')[0];
+    var user = { name: name, email: payload.email, picture: payload.picture || '',
+                 joinDate: new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'}),
+                 courses: [] };
+    sessionStorage.setItem('ciminds_user', JSON.stringify(user));
+    closeAuth();
+    updateAuthUI(user);
+    toast('Welcome to CI Minds, ' + name + '! 🎉');
+  } catch(err) { toast('Sign-in error. Please try again.'); }
+}
+
+// Attempt to init once GSI script loads
+window.addEventListener('load', function() {
+  var t = setInterval(function() {
+    if (window.google && window.google.accounts) { clearInterval(t); initGoogleButtons(); }
+  }, 200);
+  setTimeout(function(){ clearInterval(t); }, 10000);
+});
+
+function openAuth(tab) {
+  document.getElementById('authOverlay').classList.add('open');
+  document.getElementById('authLogin').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('authSignup').style.display = tab === 'signup' ? '' : 'none';
+  document.body.style.overflow = 'hidden';
+  // Re-render google buttons after modal opens (needs dimensions)
+  setTimeout(initGoogleButtons, 80);
+}
+
+function updateAuthUI(user) {
+  var logBtn  = document.getElementById('navLoginBtn');
+  var signBtn = document.getElementById('navSignupBtn');
+  if (logBtn)  logBtn.style.display = 'none';
+  if (signBtn) signBtn.style.display = 'none';
+
+  // Remove old avatar if present
+  var old = document.getElementById('navProfileAvatar');
+  if (old) old.remove();
+
+  var avatarEl;
+  if (user.picture) {
+    avatarEl = document.createElement('img');
+    avatarEl.src = user.picture;
+    avatarEl.className = 'nav-avatar';
+    avatarEl.id = 'navProfileAvatar';
+    avatarEl.title = user.name;
+    avatarEl.onclick = function(){ openProfile(); };
+  } else {
+    avatarEl = document.createElement('div');
+    avatarEl.className = 'nav-avatar-initials';
+    avatarEl.id = 'navProfileAvatar';
+    avatarEl.title = user.name;
+    avatarEl.textContent = (user.name.split(' ').map(function(w){return w[0];}).join('').substring(0,2)).toUpperCase();
+    avatarEl.onclick = function(){ openProfile(); };
+  }
+  document.getElementById('navActionsDesktop').appendChild(avatarEl);
+
+  // Mobile drawer — show profile link
+  var mobileProfileLink = document.getElementById('mobileProfileLink');
+  if (mobileProfileLink) {
+    mobileProfileLink.style.display = '';
+    mobileProfileLink.textContent = '👤 ' + user.name.split(' ')[0] + "'s Profile";
+  }
+}
+
+// ── SESSION RESTORE on page load ──
+(function restoreSession() {
+  try {
+    var stored = sessionStorage.getItem('ciminds_user');
+    if (stored) { var u = JSON.parse(stored); updateAuthUI(u); }
+  } catch(e) {}
+})();
+
+// ── PROFILE MODAL ──
+function openProfile() {
+  var user = getUser();
+  if (!user) { openAuth('login'); return; }
+  renderProfile(user);
+  document.getElementById('profileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleProfileOverlayClick(e) {
+  if (e.target === document.getElementById('profileOverlay')) closeProfile();
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeAuth(); closeProfile(); } });
+
+function getUser() {
+  try { return JSON.parse(sessionStorage.getItem('ciminds_user')); } catch(e) { return null; }
+}
+function saveUser(u) { sessionStorage.setItem('ciminds_user', JSON.stringify(u)); }
+
+function renderProfile(user) {
+  // Banner avatar
+  var avatarHtml = user.picture
+    ? '<img class="profile-avatar-img" src="' + user.picture + '" alt="' + esc(user.name) + '">'
+    : '<div class="profile-avatar-initials-lg">' + (user.name.split(' ').map(function(w){return w[0];}).join('').substring(0,2)).toUpperCase() + '</div>';
+  document.getElementById('profileAvatarSlot').innerHTML = avatarHtml;
+  document.getElementById('profileName').textContent = user.name;
+  document.getElementById('profileEmail').textContent = user.email;
+  document.getElementById('profileJoinDate').textContent = 'Member since ' + (user.joinDate || 'Today');
+
+  // Stats
+  var courses = user.courses || [];
+  document.getElementById('profileStatCourses').textContent = courses.length;
+  document.getElementById('profileStatCerts').textContent = courses.filter(function(c){return c.status==='Certified';}).length;
+  document.getElementById('profileStatHours').textContent = courses.reduce(function(a,c){return a+(c.hours||0);},0);
+
+  // Enrolled courses
+  var coursesHtml = courses.length === 0
+    ? '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">No courses enrolled yet.<br><a href="#contact" onclick="closeProfile();return true" style="color:var(--ink);font-weight:600;text-decoration:underline">Enroll now →</a></div>'
+    : courses.map(function(c) {
+        return '<div class="profile-course-item"><div class="profile-course-icon">' + (c.icon||'📚') + '</div>'
+          + '<div><div class="profile-course-name">' + esc(c.name) + '</div>'
+          + '<div class="profile-course-tag">' + esc(c.tag||'') + '</div></div>'
+          + '<div class="profile-course-status">' + (c.status||'Enrolled') + '</div></div>';
+      }).join('');
+  document.getElementById('profileCoursesList').innerHTML = coursesHtml;
+
+  // Edit form
+  document.getElementById('editName').value = user.name;
+  document.getElementById('editEmail').value = user.email;
+  document.getElementById('editPhone').value = user.phone || '';
+  document.getElementById('editOrg').value = user.org || '';
+
+  // Show overview tab by default
+  switchProfileTab('overview');
+}
+
+function switchProfileTab(tab) {
+  document.querySelectorAll('.profile-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  document.querySelectorAll('.profile-pane').forEach(function(p){
+    p.classList.toggle('active', p.id === 'pane-' + tab);
+  });
+}
+
+function saveProfileEdits() {
+  var user = getUser();
+  if (!user) return;
+  var newName = document.getElementById('editName').value.trim();
+  var newPhone = document.getElementById('editPhone').value.trim();
+  var newOrg = document.getElementById('editOrg').value.trim();
+  if (!newName) { toast('⚠ Name cannot be empty.'); return; }
+  user.name = newName;
+  user.phone = newPhone;
+  user.org = newOrg;
+  saveUser(user);
+  updateAuthUI(user);
+  renderProfile(user);
+  switchProfileTab('overview');
+  toast('Profile updated ✓');
+}
+
+function signOut() {
+  sessionStorage.removeItem('ciminds_user');
+  closeProfile();
+  // Restore nav buttons
+  var logBtn  = document.getElementById('navLoginBtn');
+  var signBtn = document.getElementById('navSignupBtn');
+  if (logBtn)  logBtn.style.display = '';
+  if (signBtn) signBtn.style.display = '';
+  var old = document.getElementById('navProfileAvatar');
+  if (old) old.remove();
+  var mobileProfileLink = document.getElementById('mobileProfileLink');
+  if (mobileProfileLink) mobileProfileLink.style.display = 'none';
+  toast('You have been signed out.');
+  // Revoke Google token if available
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    window.google.accounts.id.disableAutoSelect();
+  }
+}
+function doLogin() { var email = document.getElementById('li-email').value.trim(); var pass = document.getElementById('li-pass').value; if (!email || !pass) { toast('⚠ Please enter your email and password.'); return; } if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('⚠ Please enter a valid email.'); return; } toast('Signing in… (connect your auth backend to enable)'); closeAuth(); }
+function doSignup() { var fname = document.getElementById('su-fname').value.trim(); var lname = document.getElementById('su-lname').value.trim(); var email = document.getElementById('su-email').value.trim(); var pass = document.getElementById('su-pass').value; if (!fname || !email || !pass) { toast('⚠ Please fill in all required fields.'); return; } if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('⚠ Please enter a valid email.'); return; } if (pass.length < 8) { toast('⚠ Password must be at least 8 characters.'); return; } toast('Account created! ✓ Connect your auth backend to finish setup.'); closeAuth(); }
+</script>
+
+<div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+  <div class="auth-modal" id="authModal"><button class="auth-close" onclick="closeAuth()">✕</button><div class="auth-logo">CI MINDS<span style="width:5px;height:5px;border-radius:50%;background:#111;display:inline-block;margin-left:2px;margin-bottom:2px"></span></div>
+    <div id="authLogin"><h2 class="auth-title">Welcome back</h2><p class="auth-sub">Sign in to your CI Minds account</p>
+      <div id="googleBtnLogin" class="google-btn-container" style="min-height:44px;display:flex;align-items:center;justify-content:center"></div>
+      <div class="auth-divider">or</div><div class="auth-field"><label>Email address</label><input type="email" id="li-email" placeholder="you@example.com"/></div><div class="auth-field"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••"/></div><div style="text-align:right;margin-top:-8px;margin-bottom:16px"><span class="auth-forgot" onclick="toast('Password reset link sent! Check your inbox.')">Forgot password?</span></div><button class="auth-submit" onclick="doLogin()">Sign In</button><div class="auth-switch">Don't have an account? <a onclick="openAuth('signup')">Sign up free</a></div></div>
+    <div id="authSignup" style="display:none"><h2 class="auth-title">Create account</h2><p class="auth-sub">Join CI Minds and start your certification journey</p>
+      <div id="googleBtnSignup" class="google-btn-container" style="min-height:44px;display:flex;align-items:center;justify-content:center"></div>
+      <div class="auth-divider">or</div><div class="auth-name-row"><div class="auth-field"><label>First name</label><input type="text" id="su-fname" placeholder="First"/></div><div class="auth-field"><label>Last name</label><input type="text" id="su-lname" placeholder="Last"/></div></div><div class="auth-field"><label>Email address</label><input type="email" id="su-email" placeholder="you@example.com"/></div><div class="auth-field"><label>Password</label><input type="password" id="su-pass" placeholder="Min 8 characters"/></div><button class="auth-submit" onclick="doSignup()">Create Account</button><p class="auth-terms">By signing up you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p><div class="auth-switch">Already have an account? <a onclick="openAuth('login')">Sign in</a></div></div>
+  </div>
+</div>
+
+<!-- ── PROFILE MODAL ── -->
+<div class="profile-overlay" id="profileOverlay" onclick="handleProfileOverlayClick(event)">
+  <div class="profile-modal">
+    <div class="profile-banner">
+      <div class="profile-avatar-wrap" id="profileAvatarSlot"></div>
+      <button class="profile-banner-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="profile-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="profile-name" id="profileName">–</div>
+          <div class="profile-email" id="profileEmail">–</div>
+          <div class="profile-badge">✦ CI Minds Member</div>
+        </div>
+        <button class="profile-btn danger" style="align-self:flex-start" onclick="signOut()">Sign out</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:18px" id="profileJoinDate"></div>
+
+      <!-- Stats -->
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="profileStatCourses">0</div>
+          <div class="profile-stat-lbl">Enrolled</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="profileStatCerts">0</div>
+          <div class="profile-stat-lbl">Certified</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="profileStatHours">0</div>
+          <div class="profile-stat-lbl">Hours</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="profile-tabs">
+        <button class="profile-tab active" data-tab="overview" onclick="switchProfileTab('overview')">Overview</button>
+        <button class="profile-tab" data-tab="courses" onclick="switchProfileTab('courses')">My Courses</button>
+        <button class="profile-tab" data-tab="edit" onclick="switchProfileTab('edit')">Edit Profile</button>
+      </div>
+
+      <!-- Overview pane -->
+      <div class="profile-pane active" id="pane-overview">
+        <div class="profile-section-lbl">Quick actions</div>
+        <div class="profile-actions">
+          <button class="profile-btn primary" onclick="closeProfile();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">📋 Enroll in a Course</button>
+          <button class="profile-btn ghost" onclick="switchProfileTab('courses')">🎓 View My Courses</button>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:#f7f5f2;border-radius:16px">
+          <div class="profile-section-lbl" style="margin-bottom:6px">Account info</div>
+          <div style="font-size:13px;color:var(--muted);line-height:2">
+            Sign-in method: <strong style="color:var(--ink)">Google / Email</strong><br>
+            Account status: <strong style="color:var(--green)">✓ Active</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses pane -->
+      <div class="profile-pane" id="pane-courses">
+        <div class="profile-section-lbl">Enrolled courses</div>
+        <div class="profile-courses" id="profileCoursesList"></div>
+        <button class="profile-btn primary" style="width:100%;justify-content:center" onclick="closeProfile();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">+ Enroll in a New Course</button>
+      </div>
+
+      <!-- Edit pane -->
+      <div class="profile-pane" id="pane-edit">
+        <div class="profile-section-lbl">Edit your profile</div>
+        <div class="profile-edit-form">
+          <input id="editName" placeholder="Full name *" />
+          <input id="editEmail" placeholder="Email address" disabled style="opacity:.5;cursor:not-allowed"/>
+          <input id="editPhone" placeholder="Phone number (optional)" type="tel"/>
+          <input id="editOrg" placeholder="Organisation (optional)" />
+        </div>
+        <div class="profile-actions">
+          <button class="profile-btn primary" onclick="saveProfileEdits()">Save Changes</button>
+          <button class="profile-btn ghost" onclick="switchProfileTab('overview')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
